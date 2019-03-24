@@ -7,5 +7,5 @@ y = [2,4,2]
 plt.plot(x, y)
 plt.xlabel('x - axis')
 plt.ylabel('y - axis')
-plt.title('My first graph is cool!')
+plt.title('My first graph is fun!')
 plt.show()
