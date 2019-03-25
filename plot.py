@@ -1,8 +1,12 @@
 #!/usr/bin/python
+# ----------------------------------------------------------
+# imports
+# ----------------------------------------------------------
 # import math plotting library 
 import matplotlib.pyplot as plt
-import numpy as np
-from numpy.polynomial.polynomial import polyfit
+# ----------------------------------------------------------
+# read in actual data
+# ----------------------------------------------------------
 # create two empty arrays or lists
 x = []
 y = []
@@ -18,21 +22,56 @@ with open('data/cu.data.1.AllItems.M01.CUSR0000SA0', 'r') as cpi_file:
     	cpi = float(d[3])
     	x.append(year)
     	y.append(cpi)
-# get offset and slope with polyfit
-b, m = polyfit(x, y, 1)
-# get value at 2069
-l_end = b + m*2069
-f = []
-l = []
-for i in range(1947,2080):
-	l.append(float(i))
-	f.append(b + m*i)
+# ----------------------------------------------------------
+# get the difference year over year
+# ----------------------------------------------------------
+i = 0
+diff = []
+last_cpi = 0.0
+for cpi in y:
+	i += 1
+	if i > 1:
+		i_diff = ((cpi-last_cpi)/ (float(last_cpi)))
+		diff.append(i_diff)
+	last_cpi = cpi
+# ----------------------------------------------------------
+# calculate the average difference
+# ----------------------------------------------------------
+avg_diff = sum(diff) / (float(len(diff)))
+# ----------------------------------------------------------
+# extrapolate new line based on average diff
+# ----------------------------------------------------------
+x2 = []
+y2 = []
+last = y[len(y) - 1]
+yoy = (avg_diff + 1.0)
+for i in range(2020, 2070):
+	x2.append(float(i))
+	new_cpi = last*yoy
+	y2.append(new_cpi)
+	last = new_cpi
+# ----------------------------------------------------------
 # plot x and y arrays
+# ----------------------------------------------------------
 plt.plot(x, y, label='BLS CPI data')
-plt.plot(l, f, '-', label='estimated CPI')
+plt.plot(x2, y2, '-', label='estimated CPI')
+# ----------------------------------------------------------
+# get value at 2019
+# ----------------------------------------------------------
+l_rend = y[len(y)-1]
+# add point for 2019
+plt.plot(2019, l_rend, 'bo')
+plt.text(2019, l_rend , 'CPI: %.2f'%(l_rend), bbox=dict(facecolor='yellow', alpha=0.2), fontsize=10)
+# ----------------------------------------------------------
+# get value at 2069
+# ----------------------------------------------------------
+l_xend = y2[len(y2)-1]
 # add point for 2069
-plt.plot(2069, l_end, 'ro')
-plt.text(2069, l_end , 'CPI: %.2f'%(l_end), bbox=dict(facecolor='yellow', alpha=0.2), fontsize=10)
+plt.plot(2069, l_xend, 'ro')
+plt.text(2069, l_xend , 'CPI: %.2f'%(l_xend), bbox=dict(facecolor='yellow', alpha=0.2), fontsize=10)
+# ----------------------------------------------------------
+# annotate graph
+# ----------------------------------------------------------
 # add xlabel
 plt.xlabel('year')
 # add ylabel
