@@ -1,4 +1,5 @@
-### Hi this is my STEAM project! 
+### Predicting future CPI Data
 
-## I like cats yay!
+![CPI Values from 1947 to 2069](./img/cpi_chart.png?raw=true "Title")
+
 
